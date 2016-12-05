@@ -1,7 +1,10 @@
+<!--main menu screen -->
+
 {% if latest_poll_list %}
     <ul>
     {% for poll in latest_poll_list %}
-		<li><a href="{% url 'polls:detail' poll.id %}">{{ poll.question }}</a></li>
+		<!--<li><a href="{% url 'polls:detail' poll.id %}">{{ poll.question }}</a></li>-->
+        <li><a href="{% url 'polls:detail' poll.id %}">{{ poll.category }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

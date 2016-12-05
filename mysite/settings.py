@@ -5,7 +5,7 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
+# print("pip1")
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -119,6 +119,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

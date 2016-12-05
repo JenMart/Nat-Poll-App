@@ -12,25 +12,25 @@ class PollMethodTests(TestCase):
     def test_was_published_recently_with_future_poll(self):
         """
         was_published_recently() should return False for polls whose
-        pub_date is in the future
+        lastPurchaseDate is in the future
         """
-        future_poll = Poll(pub_date=timezone.now() + datetime.timedelta(days=30))
+        future_poll = Poll(lastPurchaseDate=timezone.now() + datetime.timedelta(days=30))
         self.assertEqual(future_poll.was_published_recently(), False)
 
     def test_was_published_recently_with_old_poll(self):
         """
-        was_published_recently() should return False for polls whose pub_date
+        was_published_recently() should return False for polls whose lastPurchaseDate
         is older than 1 day
         """
-        old_poll = Poll(pub_date=timezone.now() - datetime.timedelta(days=30))
+        old_poll = Poll(lastPurchaseDate=timezone.now() - datetime.timedelta(days=30))
         self.assertEqual(old_poll.was_published_recently(), False)
 
     def test_was_published_recently_with_recent_poll(self):
         """
-        was_published_recently() should return True for polls whose pub_date
+        was_published_recently() should return True for polls whose lastPurchaseDate
         is within the last day
         """
-        recent_poll = Poll(pub_date=timezone.now() - datetime.timedelta(hours=1))
+        recent_poll = Poll(lastPurchaseDate=timezone.now() - datetime.timedelta(hours=1))
         self.assertEqual(recent_poll.was_published_recently(), True)
 
 
@@ -42,7 +42,7 @@ def create_poll(question, days):
     """
     return Poll.objects.create(
         question=question,
-        pub_date=timezone.now() + datetime.timedelta(days=days)
+        lastPurchaseDate=timezone.now() + datetime.timedelta(days=days)
     )
 
 
@@ -58,7 +58,7 @@ class PollViewTests(TestCase):
 
     def test_index_view_with_a_past_poll(self):
         """
-        Polls with a pub_date in the past should be displayed on the index page.
+        Polls with a lastPurchaseDate in the past should be displayed on the index page.
         """
         create_poll(question="Past poll.", days=-30)
         response = self.client.get(reverse('polls:index'))
@@ -69,7 +69,7 @@ class PollViewTests(TestCase):
 
     def test_index_view_with_a_future_poll(self):
         """
-        Polls with a pub_date in the future should not be displayed on the
+        Polls with a lastPurchaseDate in the future should not be displayed on the
         index page.
         """
         create_poll(question="Future poll.", days=30)
@@ -106,7 +106,7 @@ class PollViewTests(TestCase):
 class PollIndexDetailTests(TestCase):
     def test_detail_view_with_a_future_poll(self):
         """
-        The detail view of a poll with a pub_date in the future should
+        The detail view of a poll with a lastPurchaseDate in the future should
         return a 404 not found.
         """
         future_poll = create_poll(question='Future poll.', days=5)
@@ -115,7 +115,7 @@ class PollIndexDetailTests(TestCase):
 
     def test_detail_view_with_a_past_poll(self):
         """
-        The detail view of a poll with a pub_date in the past should display
+        The detail view of a poll with a lastPurchaseDate in the past should display
         the poll's question.
         """
         past_poll = create_poll(question='Past Poll.', days=-5)
