@@ -1,5 +1,5 @@
 <!--voting screen-->
-<h1>{{ snacks.name }}</h1>
+<h1>{{ poll.category }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -7,7 +7,7 @@
 {% url 'polls:vote' poll.id %}
 " method="post"> <!--method=post is used to alter data server-side-->
 {% csrf_token %}
-{% for snack in snacks.name_set.all %} <!--this is where the issue is-->
+{% for snack in poll.snacks_set.all %} <!--this is where the issue is-->
     <input type="radio" name="snack" id="snack{{ forloop.counter }}" value="{{ snack.id }}" />
     <label for="snack{{ forloop.counter }}">{{ snack.name }}</label><br />
 {% endfor %}

@@ -20,7 +20,7 @@ class IndexView(generic.ListView):
 
 
 class DetailView(generic.DetailView):
-    model = snacks
+    model = Poll
     template_name = 'polls/detail.html'
 
     def get_queryset(self):
@@ -28,7 +28,7 @@ class DetailView(generic.DetailView):
         Excludes any polls that aren't published yet.
         """
 
-        return snacks.objects.filter()
+        return Poll.objects.filter()
 
 
 class ResultsView(generic.DetailView):
