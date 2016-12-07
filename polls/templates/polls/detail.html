@@ -7,10 +7,13 @@
 {% url 'polls:vote' poll.id %}
 " method="post"> <!--method=post is used to alter data server-side-->
 {% csrf_token %}
-{% for snack in poll.snacks_set.all %} <!--this is where the issue is-->
+{% for snack in poll.snacks_set.all %}
     <input type="radio" name="snack" id="snack{{ forloop.counter }}" value="{{ snack.id }}" />
     <label for="snack{{ forloop.counter }}">{{ snack.name }}</label><br />
 {% endfor %}
     <!--<li><a>pip</a></li>-->
 <input type="submit" value="Vote" />
 </form>
+
+
+

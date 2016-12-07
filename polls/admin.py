@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import snacks, Poll
+from .models import Snacks, Poll
 
 admin.site.register(Poll)
 # class ChoiceInline(admin.TabularInline):
