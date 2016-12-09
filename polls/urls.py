@@ -8,7 +8,9 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/$', views.DetailView.as_view(), name='detail'),
     url(r'^(?P<pk>\d+)/results/$', views.ResultsView.as_view(), name='results'),
     url(r'^(?P<poll_id>\d+)/vote/$', views.vote, name='vote'),
-    # url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
+    url(r'^/suggestions/$', views.suggestionView, name='suggestions'),
+    url(r'^/uploadSuggestion/$', views.uploadSuggestion, name='uploadSuggestion'),
+
 
 
 )

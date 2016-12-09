@@ -4,16 +4,18 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views import generic
+from . import dbqeury
+from django.template import loader
 
+#basic design of application influenced by django tutorial
 
 from .models import Snacks, voters, Poll
 
 
 class IndexView(generic.ListView):
+    dbqeury.getSnacks()
     template_name = 'polls/index.html'
     context_object_name = 'latest_poll_list'
-    # getSnacks()
-
 
     def get_queryset(self):
         """
@@ -29,22 +31,34 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
     def get_queryset(self):
-        """
-        Excludes any polls that aren't published yet.
-        """
 
         return Poll.objects.filter()
 
 
-class ResultsView(generic.DetailView):
-    model = Snacks
+def suggestionView(request):
+
+    return render(request, 'polls/suggestions.html', {})
+
+def uploadSuggestion(request): #used to pull data from suggestions.html
+    if request.method == 'POST':
+        suggestName = request.POST['snackName']
+        suggestLoc = request.POST['purchLocation']
+        p = Poll.objects.get(pk=3)
+        p.snacks_set.create(name=suggestName,source_ID=suggestLoc,optional="n/a",purchaseLocation="n/a",purchaseCount=0,lastPurchaseDate=timezone.now(),votes=0)
+        requests.post('https://api-snacks.nerderylabs.com/v1/snacks?ApiKey=05ec8f9f-432f-45ed-84fb-aa3c844d8870', data={'name': suggestName, 'location': suggestLoc, 'latitude': 0, 'longitude': 0})
+        return render(request, 'polls/index', {})
+
+
+
+class ResultsView(generic.DetailView): #displays results
+    model = Poll
     template_name = 'polls/results.html'
 
 
-def vote(request, poll_id): #no effect
+def vote(request, poll_id): #takes user input from display.html
     p = get_object_or_404(Poll, pk=poll_id)
     try:
-        selected_choice = p.snacks_set.get(pk=request.POST['name'])
+        selected_choice = p.snacks_set.get(pk=request.POST['snack'])
     except (KeyError, Snacks.DoesNotExist):
         # Redisplay the poll voting form.
         return render(request, 'polls/detail.html', {'poll': p,'error_message': "You didn't select a choice.",})
