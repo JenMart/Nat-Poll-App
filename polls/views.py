@@ -11,7 +11,7 @@ from . import dbqeury
 from .models import Snacks
 from .models import Poll
 
-#basic design of application influenced by django tutorial at: https://docs.djangoproject.com/en/1.10/
+
 
 
 

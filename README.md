@@ -1,7 +1,8 @@
-django-poll-app
+NAT-poll-app
 ===============
 
-The solution to https://docs.djangoproject.com/en/dev/intro/tutorial01/
+basic design of application influenced by django tutorial at: https://docs.djangoproject.com/en/1.10/
+Application constructed using Django version 1.10.3
 
 Getting Started
 ---------------
