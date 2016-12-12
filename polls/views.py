@@ -17,7 +17,8 @@ from .models import Poll
 
 class IndexView(generic.ListView):
 
-    dbqeury.getSnacks()
+    dbqeury.getSnacks() #Whenever the main menu is brought up, the system makes an API call and commits to DB
+                        #Not the most eligant solution, works best on small scale.
     template_name = 'polls/index.html'
     context_object_name = 'latest_poll_list'
 
