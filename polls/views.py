@@ -1,16 +1,18 @@
 from datetime import datetime
 from django.core.urlresolvers import reverse
 import requests
-from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.shortcuts import get_object_or_404, render, render_to_response
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.utils import timezone
 from django.views import generic
 from . import dbqeury
-from django.template import loader, RequestContext
+from .models import Snacks
+from .models import Poll
 
-#basic design of application influenced by django tutorial
+#basic design of application influenced by django tutorial at: https://docs.djangoproject.com/en/1.10/
 
-from .models import Snacks, voters, Poll
 
 
 class IndexView(generic.ListView):
@@ -25,27 +27,12 @@ class IndexView(generic.ListView):
         published in the future).
         """
 
-        return Poll.objects.filter(pub_date__lte=timezone.now() ).order_by('-pub_date')[:5]
+        return Poll.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 
 class DetailView(generic.DetailView):
     model = Poll
     template_name = 'polls/detail.html'
-    ###Creating cookie
-    response = HttpResponse('polls/detail.html')
-    # if 'vote_checker' not in request.COOKIES:
-    #     response.set_cookie('vote_checler', datetime.now())
-    # else:
-    #     vote_checker = request.COOKIES['vote_checker']
-    #     vote_checker_date = datetime.strptime(vote_checker[:-7], "%Y-%m-%d %H:%M:%S")
-    #     vote_checker_date = datetime.strptime(vote_checker[:-7], "%Y-%m-%d %H:%M:%S")
-    #     if (datetime.now() - vote_checker_date).days < 30:
-    #         response.set_cookie('vote_checker')
-
-        #         vote_checker = requests.COOKIES['vote_checker']
-        # vote_checker_date = datetime.strptime(vote_checker[:-7], "%Y-%m-%d %H:%M:%S")
-        # if (datetime.now() - vote_checker_date).days > 30:
-
 
     def get_queryset(self):
 
@@ -54,9 +41,7 @@ class DetailView(generic.DetailView):
 
 def suggestionView(request):
 
-
-
-    return render(request, 'polls/suggestions.html', {})
+    return render(request, 'polls/suggestions.html',{})
 
 def uploadSuggestion(request): #used to pull data from suggestions.html
     if request.method == 'POST':
@@ -65,19 +50,17 @@ def uploadSuggestion(request): #used to pull data from suggestions.html
         p = Poll.objects.get(pk=3)
         p.snacks_set.create(name=suggestName,source_ID=suggestLoc,optional="n/a",purchaseLocation="n/a",purchaseCount=0,lastPurchaseDate=timezone.now(),votes=0)
         requests.post('https://api-snacks.nerderylabs.com/v1/snacks?ApiKey=05ec8f9f-432f-45ed-84fb-aa3c844d8870', data={'name': suggestName, 'location': suggestLoc, 'latitude': 0, 'longitude': 0})
-        # return render(request, 'polls/index', {})
-        return HttpResponseRedirect(reverse('polls/index'))
-
+        #Pushes user back to main menu. Effectively a 'back' button.
+        return HttpResponseRedirect(reverse('polls:index'))
 
 class ResultsView(generic.DetailView): #displays results
     model = Poll
     template_name = 'polls/results.html'
 
-
 def vote(request, poll_id): #takes user input from display.html
 
     p = get_object_or_404(Poll, pk=poll_id)
-    times_voted = int(request.COOKIES.get('visits', '1')) #Counter started at 1 instead of 0
+    times_voted = int(request.COOKIES.get('visits','1')) #Counter started at 1 instead of 0
     response = HttpResponse('polls/detail.html')
     try:
         selected_choice = p.snacks_set.get(pk=request.POST['snack'])
@@ -104,14 +87,3 @@ def vote(request, poll_id): #takes user input from display.html
             response.set_cookie('vote_checker', datetime.now())
             return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 
-
-##############happy place#############
-# def detail(request, question_id):
-#     return HttpResponse("You're looking at question ")
-#
-# def results(request, question_id):
-#     response = "You're looking at the results of question"
-#     return HttpResponse(response)
-#
-# def vote(request, question_id):
-#     return HttpResponse("You're voting on question ")
